@@ -1,0 +1,4 @@
+  background: linear-gradient(135deg, #9c6effe6, #6fa8ff);
+
+
+  welcome   background: linear-gradient(135deg, #9c6effe6 0%, rgba(10, 32, 74, 0.9) 100%);

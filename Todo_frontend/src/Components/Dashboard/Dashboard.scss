@@ -1,0 +1,177 @@
+.Dashboard {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 20px;
+  padding: 18px;
+  margin-bottom: 22px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #4f8cff22, #6fa8ff11);
+  color: #ffffff;
+  /* do not grow too much on very wide screens */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* left: title + stats */
+.dash-left {
+  flex: 1 1 60%;
+  min-width: 220px;
+}
+
+/* title and subtitle */
+.dash-title {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.dash-sub {
+  margin: 6px 0 14px;
+  color: #ffffff;
+  opacity: 0.95;
+}
+
+/* stats: responsive row that wraps */
+.dash-stats {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* each statistic */
+.stat {
+  background: linear-gradient(135deg, #9c6effe6, #6fa8ff);
+  border-radius: 10px;
+  padding: 10px 12px;
+  text-align: center;
+  min-width: 92px;
+  flex: 1 1 92px; /* se contrae y crece según espacio */
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.stat-number {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: #ffffff;
+}
+
+/* right: types and last item */
+.dash-right {
+  width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 0 0 220px;
+}
+
+.types h4,
+.last-item h4 {
+  margin: 0 0 6px;
+  font-size: 0.95rem;
+}
+
+.type-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.type-item {
+  display: flex;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #9c6effe6, #6fa8ff);
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.last-item {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 8px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+.last-title {
+  font-weight: 600;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.last-type {
+  margin: 4px 0 0;
+  font-size: 0.85rem;
+  color: #333;
+}
+
+/* --------------------------
+   MEDIA QUERIES
+   -------------------------- */
+
+/* Tablet / small desktop */
+@media (max-width: 992px) {
+  .Dashboard {
+    padding: 16px;
+    gap: 16px;
+  }
+  .dash-right {
+    flex: 0 0 200px;
+    width: 200px;
+  }
+}
+
+/* Mobile: pile up and center */
+@media (max-width: 768px) {
+  .Dashboard {
+    flex-direction: column;
+    align-items: center;
+    padding: 14px;
+  }
+
+  .dash-left {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .dash-stats {
+    justify-content: center;
+  }
+
+  .dash-right {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 8px;
+    align-items: stretch;
+  }
+
+  .type-list {
+    flex: 1 1 auto;
+  }
+
+  .last-item {
+    flex: 1 1 auto;
+  }
+}
+
+@media (max-width: 420px) {
+  .stat-number {
+    font-size: 1rem;
+  }
+  .stat {
+    padding: 8px;
+    min-width: 78px;
+  }
+  .dash-right {
+    display: none;
+  }
+}

@@ -1,0 +1,47 @@
+.WelcomeBanner {
+  width: 100%;
+  background: linear-gradient(135deg, #9c6effe6 0%, rgba(10, 32, 74, 0.9) 100%);
+  padding: 3rem 2rem;
+  text-align: center;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  margin-bottom: 2rem;
+}
+
+.BannerContent {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.BannerTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  margin-bottom: 1rem;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.BannerSubtitle {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .WelcomeBanner {
+    padding: 2rem 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .BannerTitle {
+    font-size: 1.8rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .BannerSubtitle {
+    font-size: 0.95rem;
+  }
+}
+
