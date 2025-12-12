@@ -9,9 +9,20 @@ import AddItemForm from "./Components/AddItemForm/AddItemForm.jsx";
 import Navigation from "./Components/Navigation/Navigation.jsx";
 import Dashboard from "./Components/Dashboard/Dashboard.jsx";
 import WelcomeBanner from "./Components/WelcomeBanner/WelcomeBanner.jsx";
+import ItemDetails from "./Components/ItemDetails/ItemDetails.jsx";
 
-import { fetchTasks, postTask, deleteTask, completeTask } from "./reducers/tasksSlice";
-import { fetchGoals, postGoal, deleteGoal, completeGoal } from "./reducers/goalsSlice";
+import {
+  fetchTasks,
+  postTask,
+  deleteTask,
+  completeTask,
+} from "./reducers/tasksSlice";
+import {
+  fetchGoals,
+  postGoal,
+  deleteGoal,
+  completeGoal,
+} from "./reducers/goalsSlice";
 
 function App() {
   const dispatch = useDispatch();
@@ -22,7 +33,14 @@ function App() {
   const [showForm, setShowForm] = useState(false);
   const [viewMode, setViewMode] = useState("tasks");
 
+  // NUEVO ESTADO: 'pending' (por defecto) o 'completed'
+  const [filterMode, setFilterMode] = useState("pending");
+
+  // Estado para la tarea/meta seleccionada para ver detalles
+  const [selectedItem, setSelectedItem] = useState(null);
+
   useEffect(() => {
+    // Cargar los datos basados en el viewMode
     if (viewMode === "tasks") {
       dispatch(fetchTasks());
     } else {
@@ -30,9 +48,13 @@ function App() {
     }
   }, [dispatch, viewMode]);
 
+  // Manejadores de CRUD
+
   const handleRemoveItem = (id) => {
     if (viewMode === "tasks") dispatch(deleteTask(id));
     else dispatch(deleteGoal(id));
+    // Cierra el modal después de eliminar
+    setSelectedItem(null);
   };
 
   const handleAddItem = (item) => {
@@ -44,13 +66,50 @@ function App() {
   const handleCompleteItem = (id) => {
     if (viewMode === "tasks") dispatch(completeTask(id));
     else dispatch(completeGoal(id));
+
+    // Cierra el modal si se completa desde la vista de pendientes, ya que desaparecerá
+    if (filterMode === "pending" && selectedItem && selectedItem._id === id) {
+      setSelectedItem(null);
+    }
   };
 
-  const currentItems = viewMode === "tasks" ? tasks : goals;
+  // Manejador de UI
+
+  const handleCardClick = (item) => {
+    setSelectedItem(item);
+  };
+
+  const handleCloseDetails = () => {
+    setSelectedItem(null);
+  };
+
+  // Lógica para cambiar el modo de filtro (Pendientes <-> Completadas)
+  const toggleFilterMode = () => {
+    setFilterMode(filterMode === "pending" ? "completed" : "pending");
+  };
+
+  // Lógica de Datos
+
+  const allItems = viewMode === "tasks" ? tasks : goals;
+
+  // LÓGICA DE FILTRADO: Muestra la lista basada en el filterMode actual
+  const filteredItems = allItems.filter((item) => {
+    if (filterMode === "pending") {
+      return !item.completed; // Mostrar solo si NO está completado
+    } else if (filterMode === "completed") {
+      return item.completed; // Mostrar solo si SÍ está completado
+    }
+    return true;
+  });
+
+  // Conteo para el Dashboard (siempre usa el array completo)
+  const totalPending = allItems.filter((item) => !item.completed).length;
+  const totalCompleted = allItems.filter((item) => item.completed).length;
+  const total = allItems.length;
 
   return (
     <div className="MainContainer">
-      {/* NAVBAR siempre arriba */}
+      {/* NAVBAR */}
       <Navigation viewMode={viewMode} setViewMode={setViewMode} />
 
       {/* BANNER */}
@@ -59,14 +118,14 @@ function App() {
       {/* DASHBOARD */}
       <Dashboard
         viewMode={viewMode}
-        totalPending={currentItems.filter((item) => !item.completed).length}
-        totalCompleted={currentItems.filter((item) => item.completed).length}
-        total={currentItems.length}
+        totalPending={totalPending}
+        totalCompleted={totalCompleted}
+        total={total}
       />
 
       {/* CONTENEDOR PRINCIPAL */}
       <div className="ToDoContainer">
-        {/* BOTÓN PARA MÓVIL */}
+        {/* BOTÓN PARA MÓVIL (Añadir) */}
         <div className="d-md-none w-100 mb-3">
           <MainButton onClick={() => setShowForm(true)}>
             {viewMode === "tasks" ? "Add Task" : "Add Goal"}
@@ -86,7 +145,7 @@ function App() {
           />
         </div>
 
-        {/* MODAL PARA MÓVIL */}
+        {/* MODAL PARA AÑADIR (Móvil) */}
         <Modal show={showForm} onHide={() => setShowForm(false)}>
           <Modal.Header closeButton>
             <Modal.Title style={{ color: "#000" }}>
@@ -108,22 +167,64 @@ function App() {
 
         {/* LISTA DE ITEMS */}
         <div className="ItemCardContainer">
-          {currentItems.map((item) => (
-            <ItemCard
-              key={item._id || item.id}
-              id={item._id || item.id}
-              titleName={item.name}
-              description={item.description}
-              titleDate="Due Date"
-              date={item.dueDate}
-              cardClassName={`card-blue ${item.completed ? "completed" : ""}`}
-              onDelete={() => handleRemoveItem(item._id || item.id)}
-              onComplete={() => handleCompleteItem(item._id || item.id)}
-              completed={item.completed}
-            />
-          ))}
+          {/* BOTÓN DE FILTRO Y TÍTULO DE LA LISTA */}
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <h3 style={{ color: "white" }}>
+              {filterMode === "pending" ? "Pending List" : "Completed List"}
+            </h3>
+            <MainButton onClick={toggleFilterMode} variant="primary">
+              View {filterMode === "pending" ? "Completed" : "Pending"}
+            </MainButton>
+          </div>
+
+          {filteredItems.length === 0 ? (
+            <p style={{ color: "white", marginTop: "1rem" }}>
+              No {viewMode === "tasks" ? "tasks" : "goals"} {filterMode}. Add a
+              new one!
+            </p>
+          ) : (
+            filteredItems.map((item) => (
+              <ItemCard
+                key={item._id || item.id}
+                id={item._id || item.id}
+                titleName={item.name}
+                description={item.description}
+                titleDate="Due Date"
+                date={item.dueDate}
+                completed={item.completed} // Pasamos el estado de completado
+                cardClassName={`card-blue ${item.completed ? "completed" : ""}`}
+                // Manejador de clic para abrir detalles
+                onClick={() => handleCardClick(item)}
+              />
+            ))
+          )}
         </div>
       </div>
+
+      {/* MODAL DE DETALLES DE TAREA/META */}
+      <Modal show={!!selectedItem} onHide={handleCloseDetails}>
+        <Modal.Header closeButton className="bg-dark border-secondary">
+          <Modal.Title style={{ color: "white" }}>
+            {viewMode === "tasks" ? "Task Details" : "Goal Details"}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="bg-dark">
+          {selectedItem && (
+            <ItemDetails
+              item={selectedItem}
+              // Manejadores que cierran el modal si es necesario
+              onDelete={() => {
+                handleRemoveItem(selectedItem._id);
+                handleCloseDetails();
+              }}
+              onComplete={() => {
+                handleCompleteItem(selectedItem._id);
+              }}
+              viewMode={viewMode}
+            />
+          )}
+        </Modal.Body>
+      </Modal>
     </div>
   );
 }

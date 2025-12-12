@@ -57,19 +57,25 @@ body {
   gap: 1rem;
   justify-content: center;
 }
-
+span {
+  color: white !important;
+}
 .card-blue {
   background-color: #00e1ff00 !important; /* transparent */
   color: #ffffff !important; /* white */
-  border: dashed 1px white !important; /* white border */
+  border: none !important;
+  border-bottom: solid 2px white !important; /* white border */
   border-radius: 0px !important;
+  box-shadow: 6px 3px 10px #00000033 !important; /* subtle shadow */
+}
+.card-blue:hover {
+  background-color: #9833f653 !important; /* transparent */
 }
 .FormContainer {
   display: flex;
   justify-content: center;
   width: 100%;
 }
-
 
 @media (max-width: 768px) {
   .ToDoContainer {

@@ -1,0 +1,26 @@
+.ItemDetails {
+  // Aseguramos que todo el texto dentro del modal sea blanco
+  color: white !important;
+
+  padding: 1rem;
+
+  h4 {
+    color: white !important; // Títulos en blanco
+    margin-bottom: 0.5rem;
+  }
+
+  strong {
+    // Para las etiquetas (Description, Due Date)
+    font-weight: bold;
+    color: #ffffff; 
+  }
+
+  hr {
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    margin: 1rem 0;
+  }
+
+  .button-container {
+    margin-top: 2rem;
+  }
+}

@@ -1,5 +1,4 @@
 import Card from "react-bootstrap/Card";
-import CustomButton from "../MainButton/MainButton";
 import "./ItemCard.scss";
 
 function ItemCard({
@@ -10,8 +9,7 @@ function ItemCard({
   date,
   cardClassName,
   completed = false,
-  onDelete,
-  onComplete,
+  onClick,
 }) {
   const formattedDate = date
     ? new Date(date).toLocaleDateString("en-US", {
@@ -23,26 +21,22 @@ function ItemCard({
 
   return (
     <Card
-      className={`mb-2 ${cardClassName} w-100 ${completed ? "completed" : ""}`}
+      className={`mb-2 ${cardClassName} w-100 ${
+        completed ? "completed" : ""
+      } item-card-clickable`}
+      onClick={onClick}
+      style={{ cursor: "pointer" }}
     >
       <Card.Body>
         <Card.Title>{titleName}</Card.Title>
-        <Card.Text>{description}</Card.Text>
-        <Card.Title>{titleDate}</Card.Title>
-        <Card.Text>{formattedDate}</Card.Text>
-        <Card.Text>
-          Status: {completed ? "Completed ✅" : "Pending ⏳"}
+        <Card.Text className="text-muted small d-flex justify-content-between">
+          <span>
+            {titleDate}: {formattedDate}
+          </span>
+          <span style={{ fontWeight: "bold" }}>
+            {completed ? "COMPLETED ✅" : "PENDING ⏳"}
+          </span>
         </Card.Text>
-        <div className="button-container">
-          <CustomButton className="custom-btn" onClick={onDelete}>
-            Remove
-          </CustomButton>
-          {!completed && (
-            <CustomButton className="custom-btn" onClick={onComplete}>
-              Mark as Completed
-            </CustomButton>
-          )}
-        </div>
       </Card.Body>
     </Card>
   );
